@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  LoginBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Retain
+  LoginBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref LoginBucket
+                - /*
+      Bucket: !Ref LoginBucket
+  ProtectedBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Retain
+  ProtectedBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::121621211377:role/AllowUser'
+            Action: 's3:GetObject'
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref ProtectedBucket
+                - /*
+      Bucket: !Ref ProtectedBucket
+Outputs:
+  LoginBucketWebsiteURL:
+    Value: !GetAtt
+      - LoginBucket
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  LoginBucketSecureURL:
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !GetAtt
+          - LoginBucket
+          - DomainName
+    Description: Name of S3 bucket to hold website content
+  ProtectedBucketWebsiteURL:
+    Value: !GetAtt
+      - ProtectedBucket
+      - WebsiteURL
+    Description: URL for website hosted on S3
+  ProtectedBucketSecureURL:
+    Value: !Join
+      - ''
+      - - 'https://'
+        - !GetAtt
+          - ProtectedBucket
+          - DomainName
+    Description: Name of S3 bucket to hold website content
