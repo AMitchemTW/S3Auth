@@ -49,24 +49,6 @@ Resources:
                 - !Ref ProtectedBucket
                 - /*
       Bucket: !Ref ProtectedBucket
-  GatewayApi:
-    Type: AWS::APIGateway::RestApi
-    Properties:
-      Name: BucketGateway
-  GatewayApiResource:
-    Type: AWS::APIGateway::Resource
-    Properties:
-      ParentId: {"Fn::GetAtt": ["GatewayApi", "RootResourceId"]}
-      PathPart: {proxy+}
-      RestApiId: !Ref GatewayApi
-  GatewayApiMethod:
-    Type: AWS::APIGateway::Method
-    Properties:
-      AuthorizationType: NONE
-      HttpMethod: ANY
-      Integration:
-        Type: AWS
-        URI: 
 Outputs:
   LoginBucketWebsiteURL:
     Value: !GetAtt
