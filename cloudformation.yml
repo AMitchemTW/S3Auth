@@ -16,13 +16,13 @@ Resources:
         Statement:
           - Sid: PublicReadForGetBucketObjects
             Effect: Allow
-            Principal: *
+            Principal: '*'
             Action: s3:GetObject
             Resource: !Join
               - ''
-              - - arn:aws:s3:::
-                - !Ref LoginBucket
-                - /*
+              - - 'arn:aws:s3:::'
+                - !Ref 'LoginBucket'
+                - '/*'
       Bucket: !Ref LoginBucket
   ProtectedBucket:
     Type: AWS::S3::Bucket
@@ -45,9 +45,9 @@ Resources:
             Action: s3:GetObject
             Resource: !Join
               - ''
-              - - arn:aws:s3:::
-                - !Ref ProtectedBucket
-                - /*
+              - - 'arn:aws:s3:::'
+                - !Ref 'ProtectedBucket'
+                - '/*'
       Bucket: !Ref ProtectedBucket
 Outputs:
   LoginBucketWebsiteURL:
@@ -58,7 +58,7 @@ Outputs:
   LoginBucketSecureURL:
     Value: !Join
       - ''
-      - - https://
+      - - 'https://'
         - !GetAtt
           - LoginBucket
           - DomainName
@@ -71,7 +71,7 @@ Outputs:
   ProtectedBucketSecureURL:
     Value: !Join
       - ''
-      - - https://
+      - - 'https://'
         - !GetAtt
           - ProtectedBucket
           - DomainName
